@@ -12,6 +12,7 @@ import com.konstantion.lab5.adapter.RecyclerViewAdapter
 import com.konstantion.lab5.data.AppDatabase
 import com.konstantion.lab5.model.DataModel
 import com.konstantion.lab5.repository.DataRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -45,24 +46,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         repository = DataRepository(dataDao)
         dataList = repository.allData
 
-        viewModelScope.launch {
-            if (dataList.value.isNullOrEmpty()) {
-                repository.insert(generateTestData())
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fetchDataFromApi()
         }
-    }
-
-    private fun generateTestData(): List<DataModel> {
-        val items = mutableListOf<DataModel>()
-        for (i in 1..20) {
-            items.add(
-                DataModel(
-                    id = i,
-                    title = "Item $i",
-                    description = "Description of Item $i"
-                )
-            )
-        }
-        return items
     }
 }

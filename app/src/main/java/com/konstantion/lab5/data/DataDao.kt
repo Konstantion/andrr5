@@ -14,8 +14,8 @@ interface DataDao {
     fun getAllData(): LiveData<List<DataModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertData(data: List<DataModel>)
+    fun insertData(data: List<DataModel>): List<Long>
 
     @Query("DELETE FROM data_table")
-    suspend fun deleteAll()
+    fun deleteAll(): Unit
 }
